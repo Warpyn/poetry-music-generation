@@ -3,25 +3,6 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import re
 import json
 
-## KEY 1
-client_id = '9f2cb0e8699f42f1a735e24202abe09d'
-client_secret = '16e9fd67f81643c4aec77eb02a20f8d0'
-
-## KEY 2
-# client_id = 'dc962a7f3b9d4086b2dd71284892c4ed'
-# client_secret = '355cb4f618324115863134bd1dbca743'
-
-## KEY 3
-# client_id = 'be668bffb26244ed90d953fe65dfbcd0'
-# client_secret = '67f8400feab344c18a9d856d62051eda'
-
-## KEY 4
-# client_id = '72e2bf192d6d46539051d04067b47617'
-# client_secret = 'df3c551e33864f7eb7f16985a036123a'
-
-## KEY 5
-# client_id = 'e2d8d79a94614210846240556792e39a'
-# client_secret = '28ba2d3b25064e7c8d94e51fd795b794'
 
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)

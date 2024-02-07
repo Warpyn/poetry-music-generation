@@ -15,53 +15,6 @@ https://developer.spotify.com/dashboard/applications
 Then, fill in the variables client_id and client_secret
 """
 
-## KEY 1
-# client_id = '9f2cb0e8699f42f1a735e24202abe09d'
-# client_secret = '16e9fd67f81643c4aec77eb02a20f8d0'
-
-## KEY 2
-# client_id = 'dc962a7f3b9d4086b2dd71284892c4ed'
-# client_secret = '355cb4f618324115863134bd1dbca743'
-
-## KEY 3
-# client_id = 'be668bffb26244ed90d953fe65dfbcd0'
-# client_secret = '67f8400feab344c18a9d856d62051eda'
-
-## KEY 4
-# client_id = '72e2bf192d6d46539051d04067b47617'
-# client_secret = 'df3c551e33864f7eb7f16985a036123a'
-
-## KEY 5
-# client_id = 'e2d8d79a94614210846240556792e39a'
-# client_secret = '28ba2d3b25064e7c8d94e51fd795b794'
-
-## KEY 6
-# client_id = 'eb11114403bb4ca696f81a33586e3ea2'
-# client_secret = 'da7b86d4cb864c19992a0da1ae4a6d4b'
-
-## KEY 7
-# client_id = '5cf7660681cc459b8aea4ad70ec1c3d7'
-# client_secret = 'f98d7bf3424e430ea9481efa2a614f67'
-
-## KEY 8
-# client_id = '79f90a5257154c6d8b1a70a694d9ccdb'
-# client_secret = '421c13239dd54ea28b03c320068f1429'
-
-## KEY 9
-# client_id = '92bbaa66324c44a49a88d3e99ee637e5'
-# client_secret = '34a1586b8c6b42e7b0b74c406ba22658'
-
-## KEY 10
-# client_id = '9201603659554c829e28d527170af68a'
-# client_secret = '6604728f365f47dfb14504e5a94325be'
-
-## KEY 11
-# client_id = 'b3b08b6f842d4b46b9fcab2445a2a260'
-# client_secret = '2036b2cda22a4d2f863eebbf5124745a'
-
-## KEY 12
-client_id = '16d396e8838b4190bded8ca2058d944a'
-client_secret = '442d80f697874e3f9f0a7413299ebc0d'
 
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
