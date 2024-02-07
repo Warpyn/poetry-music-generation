@@ -1,0 +1,7 @@
+name: sulunrepo
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - ipykernel
+prefix: /Users/warpyn/anaconda3/envs/sulunrepo

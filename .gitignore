@@ -1,0 +1,7 @@
+midi-emotion/output/*
+midi-emotion/data_files/*
+*.DS_Store
+__pycache__
+.vscode
+!.gitkeep
+.cache
