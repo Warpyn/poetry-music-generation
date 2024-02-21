@@ -5,14 +5,21 @@ import math
 import torch.nn.functional as F
 import sys
 
-# from torch.nn.modules.activation import ReLU
-
 sys.path.append("..")
-# from utils import memory
 
 
 """
-MUSIC TRANSFORMER REGRESSION (to output emotion)
+MUSIC TRANSFORMER
+Multi use, can handle following conditioning methods:
+none (vanilla), continuous_concat, discrete_token
+
+CONTINUOUS CONCAT
+Takes continuous conditions as a vector of length 2, embeds it and 
+then concatenates it with every input token
+
+If d_condition <= 0, it become VANILLA music transformer
+If d_condition <= 0 and discrete condition tokens are fed,
+    it becomes "DISCRETE TOKEN" music transformer
 """
 
 def generate_mask(x, pad_token=None, batch_first=True):
@@ -31,14 +38,11 @@ def generate_mask(x, pad_token=None, batch_first=True):
     return mask
 
 
-class MusicRegression(torch.nn.Module):
-    def __init__(self, embedding_dim=None, d_inner=None, vocab_size=None, num_layer=None, num_head=None,
-                 max_seq=None, dropout=None, pad_token=None, output_size=None, 
-                 d_condition=-1, no_mask=True
+class MusicTransformerMulti(torch.nn.Module):
+    def __init__(self, embedding_dim=None, d_inner=None, d_condition=None, vocab_size=None, num_layer=None, num_head=None,
+                 max_seq=None, dropout=None, pad_token=None, attn_type=None,
                  ):
         super().__init__()
-
-        assert d_condition <= 0
 
         self.max_seq = max_seq
         self.num_layer = num_layer
@@ -47,13 +51,16 @@ class MusicRegression(torch.nn.Module):
 
         self.pad_token = pad_token
 
-        self.no_mask = no_mask
+        d_condition = 0 if d_condition < 0 else d_condition
+        self.d_condition = d_condition
 
         self.embedding = torch.nn.Embedding(num_embeddings=vocab_size, 
-                                            embedding_dim=self.embedding_dim,
+                                            embedding_dim=self.embedding_dim-self.d_condition,
                                             padding_idx=pad_token)
 
-
+        if self.d_condition > 0:
+            self.fc_condition = torch.nn.Linear(2, self.d_condition)
+        
         self.pos_encoding = DynamicPositionEmbedding(self.embedding_dim, max_seq=max_seq)
 
         self.enc_layers = torch.nn.ModuleList(
@@ -61,30 +68,42 @@ class MusicRegression(torch.nn.Module):
              for _ in range(num_layer)])
         self.dropout = torch.nn.Dropout(dropout)
 
-        self.fc = torch.nn.Sequential(
-            torch.nn.Linear(self.embedding_dim, output_size),
-            torch.nn.Tanh()
-        )
-
+        self.fc = torch.nn.Linear(self.embedding_dim, self.vocab_size)
+    
         self.init_weights()
 
     def init_weights(self):
         initrange = 0.1
         self.embedding.weight.data.uniform_(-initrange, initrange)
+        self.fc.bias.data.zero_()
+        self.fc.weight.data.uniform_(-initrange, initrange)
+        if self.d_condition > 0:
+            self.fc_condition.bias.data.zero_()
+            self.fc_condition.weight.data.uniform_(-initrange, initrange)
 
-    def forward(self, x):
-
-        mask = None if self.no_mask else generate_mask(x, self.pad_token)
+    def forward(self, x, condition):
+        # no_conditioning = not torch.equal(condition, condition)
+        # assert (self.d_condition > 0) != no_conditioning
+        # takes batch first
+        # x.shape = [batch_size, sequence_length]
+        mask = generate_mask(x, self.pad_token)
         # embed input
         x = self.embedding(x)  # (batch_size, input_seq_len, d_model)
-        x *= math.sqrt(self.embedding_dim)
+        x *= math.sqrt(self.embedding_dim-self.d_condition)
+
+        if self.d_condition > 0:
+            # embed condition using fully connected layer
+            condition = self.fc_condition(condition)
+            # tile to match input
+            condition = condition.unsqueeze(1).expand(-1, x.size(1), -1)
+            x = torch.cat([x, condition], dim=-1)   # concatenate
 
         x = self.pos_encoding(x)
         x = self.dropout(x)
         for i in range(len(self.enc_layers)):
             x = self.enc_layers[i](x, mask)
 
-        x = self.fc(x[:, 0, :])
+        x = self.fc(x)
 
         return x
 
@@ -147,7 +166,7 @@ class DynamicPositionEmbedding(torch.nn.Module):
 
 class RelativeGlobalAttention(torch.nn.Module):
     """
-    from MusiREGRESSIONc Transformer ( Huang et al, 2018 )
+    from Music Transformer ( Huang et al, 2018 )
     [paper link](https://arxiv.org/pdf/1809.04281.pdf)
     """
     def __init__(self, h=4, d=256, add_emb=False, max_seq=2048):
@@ -168,7 +187,7 @@ class RelativeGlobalAttention(torch.nn.Module):
             self.Radd = None
 
     def forward(self, inputs, mask=None):
-        """MusicTransformer
+        """
         :param inputs: a list of tensors. i.e) [Q, K, V]
         :param mask: mask tensor
         :param kwargs:

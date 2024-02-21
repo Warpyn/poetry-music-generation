@@ -4,10 +4,12 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Generates emotion-based symbolic music')
 
+parser.add_argument('--note', default=None, type=str,
+                    help='Notes about the experiment.')
 parser.add_argument("--conditioning", type=str, required=False, default="continuous_concat",
                     choices=["none", "discrete_token", "continuous_token",
                              "continuous_concat"], help='Conditioning type')
-parser.add_argument("--data_folder", type=str, default="../data_files/lpd_5/lpd_5_full")
+parser.add_argument("--data_folder", type=str, default="../data_files/lpd_5/lpd_5_full_transposable_debug")
 parser.add_argument('--full_dataset', action="store_true",
                     help='Use LPD-full dataset')
 parser.add_argument('--n_layer', type=int, default=20,
@@ -20,7 +22,7 @@ parser.add_argument('--d_condition', type=int, default=192,
                     help='condition dimension (if continuous_concat is used)')
 parser.add_argument('--d_inner', type=int, default=768*4,
                     help='inner dimension in FF')
-parser.add_argument('--tgt_len', type=int, default=1216, 
+parser.add_argument('--tgt_len', type=int, default=1216, #1216, #1152
                     help='number of tokens to predict')
 parser.add_argument('--max_gen_input_len', type=int, default=-1,
                     help='number of tokens to predict')
@@ -111,6 +113,10 @@ parser.add_argument("--always_use_discrete_condition", action="store_true",
                 help="Discrete tokens are used for every sequence")
 parser.add_argument("--regression_dir", type=str, default=None,
                     help="The path of folder with generations, to perform regression on")
+parser.add_argument("--attn_type", type=str, default="causal-linear",
+                    help="Attention type for fast transformers")
+parser.add_argument("--fast_transformers", action="store_true",
+                    help="Use the fast-transformers library")
 
 args = parser.parse_args()
 
@@ -122,12 +128,18 @@ if args.conditioning != "continuous_concat":
 
 assert not (args.exhaustive_eval and args.max_eval_step > 0)
 
+# assert (args.attn_type == "full") or args.no_amp, "Linear attention doesn't work with AMP"
+
+# if args.fast_transformers:
+#     args.attn_type = 'causal-linear'
+#     print("Using fast transformers, switching to linear attention.")
+
 if args.full_dataset:
     assert args.conditioning in ["discrete_token", "none"] and not args.regression, "LPD-full has NaN features"
 
 if args.regression:
-    args.n_layer = 8
-    print("Using 8 layers for regression")
+    # args.n_layer = 8
+    print(f"Using {args.n_layer} layers for regression")
 
 args.batch_chunk = -1
 
@@ -150,6 +162,7 @@ if args.restart_dir:
 
 if args.debug:
     args.work_dir = os.path.join(args.work_dir, "DEBUG_" + time.strftime('%Y%m%d-%H%M%S'))
+    args.data_folder += '_debug'
 elif args.no_cuda:
     args.work_dir = os.path.join(args.work_dir, "CPU_" + time.strftime('%Y%m%d-%H%M%S'))
 else:

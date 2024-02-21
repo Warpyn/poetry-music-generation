@@ -34,11 +34,11 @@ def generate_mask(x, pad_token=None, batch_first=True):
 class MusicRegression(torch.nn.Module):
     def __init__(self, embedding_dim=None, d_inner=None, vocab_size=None, num_layer=None, num_head=None,
                  max_seq=None, dropout=None, pad_token=None, output_size=None, 
-                 d_condition=-1, no_mask=True
+                 d_condition=-1, no_mask=True, attn_type=None,
                  ):
         super().__init__()
 
-        assert d_condition <= 0
+        # assert d_condition <= 0
 
         self.max_seq = max_seq
         self.num_layer = num_layer
@@ -147,7 +147,7 @@ class DynamicPositionEmbedding(torch.nn.Module):
 
 class RelativeGlobalAttention(torch.nn.Module):
     """
-    from MusiREGRESSIONc Transformer ( Huang et al, 2018 )
+    from Music Transformer ( Huang et al, 2018 )
     [paper link](https://arxiv.org/pdf/1809.04281.pdf)
     """
     def __init__(self, h=4, d=256, add_emb=False, max_seq=2048):
@@ -168,7 +168,7 @@ class RelativeGlobalAttention(torch.nn.Module):
             self.Radd = None
 
     def forward(self, inputs, mask=None):
-        """MusicTransformer
+        """
         :param inputs: a list of tensors. i.e) [Q, K, V]
         :param mask: mask tensor
         :param kwargs:

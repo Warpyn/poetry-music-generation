@@ -26,7 +26,7 @@ class LoaderGenerations:
 
         data_paths = glob(os.path.join("../output", gen_folder, "*.pt"), recursive=True)
 
-        maps = torch.load("../data_files/lpd_5/maps.pt")
+        maps = torch.load('../data_files/lpd_5/maps.pt')
         n_vocab = len(maps["tuple2idx"])
 
         self.data = []
@@ -42,14 +42,9 @@ class LoaderGenerations:
                 [maps["tuple2idx"][self.cls_token]])
 
         for data_path in data_paths:
-            print(data_path)
             generation = torch.load(data_path)
+            inds = generation["inds"]
             # remove special tokens
-            # inds = []
-            # for ind in pre_inds:
-            #     if ind < n_vocab:
-            #         inds.append(ind)
-            inds = torch.Tensor(generation["transposable_event_inds"])
             inds = inds[inds < n_vocab]              
             # split with overlap
             inds = inds.unfold(0, seq_len, int(seq_len*(1-overlap)))
