@@ -66,7 +66,7 @@ newdir = '/'.join(cwd)
 os.chdir(newdir)
 
 # pull valence and arousal values from dataframe -> generate
-df = originTestSet
+df = arousalTestSet
 num_rows, num_cols = df.shape
 
 gen_len = 2048
