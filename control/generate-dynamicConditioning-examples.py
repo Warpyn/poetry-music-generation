@@ -17,7 +17,7 @@ gen_len = 3072
 max_input_len = 512
 batch_size = 1
 max_condition = 0.8
-temps = [1.5, 1.7]
+temps = [1.0, 1.0]
 
 # currently using max condition to generate all change conditions
 # need to modify generate file to create custom conditions
