@@ -34,6 +34,7 @@ def generate(model, conditions_tensor, maps, device, out_dir,
     assert len(temperatures) in (1, 2)
 
     conditioning = torch.equal(conditions_tensor, conditions_tensor)   # doesnt have NaNs
+    conditioning = False
     if varying_condition is not None:
         assert len(primers) == 1 and not conditioning
         batch_size = varying_condition[0].size(0)
