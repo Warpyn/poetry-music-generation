@@ -6,3 +6,4 @@ __pycache__
 !.gitkeep
 .cache
 /poetry_analysis/poem_to_VA
+poetry_analysis/poem_to_VA_new/apiKey.txt

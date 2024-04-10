@@ -11,7 +11,9 @@ class GPT_client:
     '''
 
     def __init__(self):
-        self.classifier = OpenAI(api_key="APIKey")
+        with open("apiKey.txt", "r") as f:
+            apiKey = f.read().rstrip()
+        self.classifier = OpenAI(api_key=apiKey)
         self.emotion_list = "admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, neutral"
     '''
     
