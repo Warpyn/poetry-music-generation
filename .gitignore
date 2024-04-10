@@ -5,3 +5,4 @@ __pycache__
 .vscode
 !.gitkeep
 .cache
+/poetry_analysis/poem_to_VA
