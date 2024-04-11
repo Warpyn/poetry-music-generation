@@ -253,7 +253,7 @@ def generate(model, maps, device, out_dir, conditioning, short_filename=False,
                     redo_continuous_conditions.append(continuous_conditions[i, :].tolist())
                     redo_primers = primers
 
-    return redo_primers, redo_discrete_conditions, redo_continuous_conditions
+    return redo_primers, redo_discrete_conditions, redo_continuous_conditions, out_path_mid
 
 
 if __name__ == '__main__':
@@ -397,7 +397,7 @@ if __name__ == '__main__':
         discrete_conditions_run = deepcopy(discrete_conditions)
         continuous_conditions_run = deepcopy(continuous_conditions)
         while not (primers_run == [] or discrete_conditions_run == [] or continuous_conditions_run == []):
-            primers_run, discrete_conditions_run, continuous_conditions_run = generate(
+            primers_run, discrete_conditions_run, continuous_conditions_run, out_path_mid = generate(
                         model, maps, device, 
                         midi_output_dir, args.conditioning, discrete_conditions=discrete_conditions_run, 
                         min_n_instruments=args.min_n_instruments,continuous_conditions=continuous_conditions_run,
@@ -405,3 +405,5 @@ if __name__ == '__main__':
                         gen_len=args.gen_len, max_input_len=args.max_input_len,
                         amp=not args.no_amp, primers=primers_run, temperatures=args.temp, top_k=args.topk, 
                         debug=args.debug, verbose=not args.quiet, seed=args.seed)
+            with open("generationPaths.txt", "a") as f:
+                f.write(f"{out_path_mid}\n")

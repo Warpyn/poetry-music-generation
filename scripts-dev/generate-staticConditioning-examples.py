@@ -54,11 +54,16 @@ valenceTestSet = pd.DataFrame(np.array([
                                 ]),
              columns=['valence', 'arousal'])
 
+sanityTestSet = pd.DataFrame(np.array([  
+                                [0.9, 0.9]
+                                ]),
+             columns=['valence', 'arousal'])
+
 
 # change directory to inside midi-emotion repo
 
 cwd = os.getcwd().split('/')
-cwd.remove('control')
+cwd.remove('scripts-dev')
 cwd.append('midi-emotion')
 cwd.append('dev_src')
 newdir = '/'.join(cwd)
@@ -66,12 +71,15 @@ newdir = '/'.join(cwd)
 os.chdir(newdir)
 
 # pull valence and arousal values from dataframe -> generate
-df = arousalTestSet
+df = originTestSet
 num_rows, num_cols = df.shape
 
 gen_len = 2048
 max_input_len = 512
 batch_size = 1
+
+with open("../../midi-emotion/dev_src/generationPaths.txt", "w") as f:
+    f.close()
 
 for i in range(num_rows):
     valence = df.loc[i]['valence']
