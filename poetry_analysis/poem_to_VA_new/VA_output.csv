@@ -1,28 +1,58 @@
 Sentence,Valence,Arousal
-"Your laughter, 
-      a blossoming bud, 
-      eyes like peacock, 
-      vivacious, sweet your laughter, 
-      what are the feelings, 
-      on your faces, 
-      your laughter, 
-      like a melodious rain, 
-      creates sensations in the heart, 
-      your laughter
-      benumbs the eyes
-      i pray, 
-      
-      you carry on laughing ",0.9089999999999999,0.20900000000000002
-" We left that old ungainly house
-When my dog died there, after
-The burial, after the rose
-Flowered twice, pulling it by its
-Roots and carting it with our books,
-Clothes and chairs in a hurry.
-We live in a new house now,
-And, the roofs do not leak, but, when
-It rains here, I see the rain drench
-That empty house, I hear it fall
-Where my puppy now lies,
-Alone..
-",-0.5598000000000001,-0.07709999999999999
+"What is this life if, full of care,
+We have no time to stand and stare.
+No time to stand beneath the boughs
+And stare as long as sheep or cows.
+No time to see, when woods we pass,
+Where squirrels hide their nuts in grass.
+No time to see, in broad daylight,
+Streams full of stars, like skies at night.
+No time to turn at Beauty's glance,
+And watch her feet, how they can dance.
+No time to wait till her mouth can
+Enrich that smile her eyes began.
+A poor life this if, full of care,
+We have no time to stand and stare.
+","[-0.42, 0.18, -0.013, 0.253, 0.155, -0.104, -0.42]","[-0.088, -0.542, -0.051, -0.049, -0.028, -0.148, -0.088]"
+" When despair for the world grows in me
+and I wake in the night at the least sound
+in fear of what my life and my children??s lives may be,
+I go and lie down where the wood drake
+rests in his beauty on the water, and the great heron feeds.
+I come into the peace of wild things
+who do not tax their lives with forethought
+of grief. I come into the presence of still water.
+And I feel above me the day-blind stars
+waiting with their light. For a time
+I rest in the grace of the world, and am free.
+","[-0.135, 0.519, 0.539, 0.575, 0.404]","[-0.189, -0.736, -0.739, 0.108, -0.463]"
+" Half a league,
+half a league,
+Half a league onward,
+All in the valley of Death
+Rode the six hundred.
+""Forward, the Light Brigade!
+Charge for the guns!"" he said:
+Into the valley of Death
+Rode the six hundred.
+""Forward, the Light Brigade!""
+Was there a man dismay'd?
+Not tho' the soldier knew
+Some one had blunder'd:
+Their's not to make reply,
+Their's not to reason why,
+Their's but to do and die:
+Into the valley of Death
+Rode the six hundred.
+","[0.137, 0.243, -0.082]","[0.008, 0.468, 0.026]"
+" We are the hollow men
+We are the stuffed men
+Leaning together
+Headpiece filled with straw. Alas!
+Our dried voices, when
+We whisper together
+Are quiet and meaningless
+As wind in dry grass
+Or rats' feet over broken glass
+In our dry cellar
+","[-0.43, -0.521]","[-0.34, -0.235]"
