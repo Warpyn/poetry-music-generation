@@ -43,9 +43,9 @@ class VAcalculator:
     #     return sum_normalized
 
     def VA_weighting(self, VA_vector_sum, weight_sum):
-        valance_normalized = VA_vector_sum[0] / weight_sum
+        valence_normalized = VA_vector_sum[0] / weight_sum
         arousal_normalized = VA_vector_sum[1] / weight_sum
-        sum_normalized = [round(valance_normalized, 3), round(arousal_normalized, 3)]
+        sum_normalized = [round(valence_normalized, 3), round(arousal_normalized, 3)]
         return sum_normalized
             
     
