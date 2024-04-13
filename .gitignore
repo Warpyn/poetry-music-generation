@@ -11,3 +11,4 @@ poetry_analysis/poem_to_VA_new/Non_progressive_output.csv
 poetry_analysis/poem_to_VA_new/test.csv
 poetry_analysis/poem_to_VA_new/VA_output.csv
 poetry_analysis/poem_to_VA_new/VA_output.csv
+*.sf2
