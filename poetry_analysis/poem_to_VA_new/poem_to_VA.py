@@ -63,7 +63,7 @@ class poem_to_VA:
         VA_results = self.get_VA_per_poem(progressive)
         self.to_csv(VA_results, progressive)
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
 #     poems = """What is this life if, full of care,
 # We have no time to stand and stare.
 # No time to stand beneath the boughs
