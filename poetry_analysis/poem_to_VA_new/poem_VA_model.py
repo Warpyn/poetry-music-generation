@@ -11,8 +11,34 @@ class GPT_client:
     '''
 
     def __init__(self):
-        self.classifier = OpenAI(api_key="APIKey")
-        self.emotion_list = "admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, neutral"
+        with open("apiKey.txt", "r") as f:
+            apiKey = f.read().rstrip()
+        self.classifier = OpenAI(api_key=apiKey)
+        #self.emotion_list = "admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, neutral"
+        self.emotion_list = f"""happy, amazed, dazzled, allured, moved, 
+        inspired, transcendence, spirituality, thrill, love, 
+        affectionate, sensual, tender, softened, sentimental, 
+        dreamy, nostalgic, melancholic, calm, relaxed, 
+        serene, soothed, meditative, energetic, triumphant, 
+        fiery, strong, heroic, stimulated, joyful, 
+        animated, dancing, amused, agitated, nervous, 
+        tense, impatient, irritated, sad, sorrowful"""
+
+
+    '''
+    
+    Utility function
+    
+    '''
+
+    def extract_sentences(self, poem):
+        poem = poem.replace('\n', '')
+        sentences = poem.split('.')
+        sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
+        return sentences
+
+
+
     '''
     
     Detect and extract main emotions
@@ -28,25 +54,49 @@ class GPT_client:
         )
         return response.choices[0].message
 
-    def detect_emotion(self, sentence, prompt = None):
-        example = '[{"key":value}, {"key":value}]'
+    def detect_emotion(self, poem, progressive = True, prompt = None):
+        example_non_progressive = '[{"key":value}, {"key":value}]'
+        example_progressive = '[{sentence_id:vale}, {sentence:sentence}, {sentence_emotion:{key:value}, {key:value}}]'
         if not prompt: 
-            prompt = f"""For the poem delimited by triple backticks,\
-            give me a list of six to eight emotions that the poem is\
-            expressing, with each emotion labeled with its percentage.\
-            The emotion should be based on the whole piece instead of \
-            segments of the piece. Be careful for any twist or turning point \
-            All emotion must be selected from the list delimited by\
-            square bracket. \
-            Provode them with JSON format with the following keys and with out anyother characters:
-            "emotion_id", "emotion", "percentage"
-            [{self.emotion_list}]
-            ```{sentence}```
-            The output should be like a json file and should not contain any\
-            charater to organize how the answer is displayed. Do not include\
-            anything like "\n" or "```" or "json". The final list whould be a \
-            whole json list like {example} instead of several seperated json list\
-            """ 
+            if not progressive:
+                prompt = f"""For the poem delimited by triple backticks,\
+                give me a list of six to eight emotions that the poem is\
+                expressing, with each emotion labeled with its percentage.\
+                The emotion should be based on the whole piece instead of \
+                segments of the piece. Be careful for any twist or turning point \
+                All emotion must be selected from the list delimited by\
+                square bracket. \
+                Provode them with JSON format with the following keys and with out anyother characters:
+                "emotion_id", "emotion", "percentage"
+                [{self.emotion_list}]
+                ```{poem}```
+                The output should be like a json file and should not contain any\
+                charater to organize how the answer is displayed. Do not include\
+                anything like "\n" or "```" or "json". The final list whould be a \
+                whole json list like {example_non_progressive} instead of several seperated json list\
+                """ 
+            if progressive:
+                sentenceArray = self.extract_sentences(poem)
+                prompt = f"""Based on the poem delimited by triple backticks,\
+                for each sentence in the sentence array delimited in single backticks,\
+                give me a list of three to five emotions that that sentence is\
+                expressing, with each emotion labeled with its percentage.\
+                the output should be a list containing several lists\
+                All emotion must be selected from the list delimited by\
+                square bracket. \
+                Provode the result with JSON format with the following keys and with out anyother characters.\
+                For the large list, the keys are:\
+                "sentence_id", "sentence", "sentence_emotion"\
+                For the sublists, the keys are:\
+                "emotion_id", "emotion", "percentage"\
+                ```{poem}```
+                `{sentenceArray}`
+                [{self.emotion_list}]
+                The output should be like a json file and should not contain any\
+                charater to organize how the answer is displayed. Do not include\
+                anything like "\n" or "```" or "json". The final list whould be a \
+                whole json list like {example_progressive}\
+                """
         response = self.get_completion(prompt)
         #print(response.content)
         kept_emotions = json.loads(response.content)
@@ -60,19 +110,20 @@ class GPT_client:
 
 # if __name__ == "__main__":
 #     my_model = GPT_client()
-#     poem1 = """Your laughter, 
-#     a blossoming bud, 
-#     eyes like peacock, 
-#     vivacious, sweet your laughter, 
-#     what are the feelings, 
-#     on your faces, 
-#     your laughter, 
-#     like a melodious rain, 
-#     creates sensations in the heart, 
-#     your laughter
-#     benumbs the eyes
-#     i pray, 
-#     you carry on laughing"""
+#     poem1 = """We left that old ungainly house
+# #         When my dog died there, after
+# #         The burial, after the rose
+# #         Flowered twice, pulling it by its
+# #         Roots and carting it with our books,
+# #         Clothes and chairs in a hurry.
+# #         We live in a new house now,
+# #         And, the roofs do not leak, but, when
+# #         It rains here, I see the rain drench
+# #         That empty house, I hear it fall
+# #         Where my puppy now lies,
+# #         Alone."""
+#     detected_emotions, if_progressive = my_model.detect_emotion(poem1)
+#     print(detected_emotions)
 #     poem2 = """
 #         We left that old ungainly house
 #         When my dog died there, after

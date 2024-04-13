@@ -1,5 +1,6 @@
 from poem_VA_model import*
 import pandas as pd
+import os
 import math
 
 class VAcalculator:
@@ -11,7 +12,7 @@ class VAcalculator:
         return VA_format
 
 
-    def __init__(self, emotions, emotion_data_path = './content/emotionVAScaled.csv'):
+    def __init__(self, emotions, emotion_data_path = './content/emotionaVA_scaled_dic.csv'):
         self.emotion_dic = self.read_emotion_file_to_VA_dic(emotion_data_path)
         self.emotions = emotions
         
@@ -42,7 +43,9 @@ class VAcalculator:
     #     return sum_normalized
 
     def VA_weighting(self, VA_vector_sum, weight_sum):
-        sum_normalized = [VA_vector_sum[0] / weight_sum, VA_vector_sum[1] / weight_sum]
+        valence_normalized = VA_vector_sum[0] / weight_sum
+        arousal_normalized = VA_vector_sum[1] / weight_sum
+        sum_normalized = [round(valence_normalized, 3), round(arousal_normalized, 3)]
         return sum_normalized
             
     
@@ -55,10 +58,18 @@ class VAcalculator:
     
 
 # if __name__ == "__main__":
-#     #kept_emotions = [{'label': 'joy', 'score': 0.8082323670387268}, {'label': 'anger', 'score': 0.051088836044073105}, {'label': 'annoyance', 'score': 0.03365428373217583}, {'label': 'neutral', 'score': 0.0223822221159935}]
-#     kept_emotions = [{ "emotion_id": 1, "emotion": "admiration", "percentage": 20 }, { "emotion_id": 2, "emotion": "joy", "percentage": 20 }, { "emotion_id": 3, "emotion": "love", "percentage": 20 }, { "emotion_id": 4, "emotion": "gratitude", "percentage": 15 }, { "emotion_id": 5, "emotion": "excitement", "percentage": 10 }, { "emotion_id": 6, "emotion": "curiosity", "percentage": 10 }, { "emotion_id": 7, "emotion": "optimism", "percentage": 5 }]
-#     my_calculator = VAcalculator(kept_emotions)
-#     # vector = my_calculator.get_VA_vectors(kept_emotions)
-#     # print(vector)
-#     result = my_calculator.wrapper(kept_emotions)
-#     print(result)
+    
+    # #kept_emotions = [{'label': 'joy', 'score': 0.8082323670387268}, {'label': 'anger', 'score': 0.051088836044073105}, {'label': 'annoyance', 'score': 0.03365428373217583}, {'label': 'neutral', 'score': 0.0223822221159935}]
+    
+    # kept_emotions = [{ "emotion_id": 1, "emotion": "admiration", "percentage": 20 }, { "emotion_id": 2, "emotion": "joy", "percentage": 20 }, { "emotion_id": 3, "emotion": "love", "percentage": 20 }, { "emotion_id": 4, "emotion": "gratitude", "percentage": 15 }, { "emotion_id": 5, "emotion": "excitement", "percentage": 10 }, { "emotion_id": 6, "emotion": "curiosity", "percentage": 10 }, { "emotion_id": 7, "emotion": "optimism", "percentage": 5 }]
+    # my_calculator = VAcalculator(kept_emotions)
+    # df = my_calculator.read_emotion_file_to_VA_dic('./content/emotionaVA_scaled_dic.csv')
+    
+    
+    
+    
+    # print(df)
+    # # vector = my_calculator.get_VA_vectors(kept_emotions)
+    # # print(vector)
+    # result = my_calculator.wrapper(kept_emotions)
+    # print(result)
