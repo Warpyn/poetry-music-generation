@@ -18,6 +18,8 @@ args = parser.parse_args()
 PATH_TO_POETRY_EMOTION_SCRIPT = "./poetry_analysis/poem_to_VA_new/main.py"
 PATH_TO_POETRY_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/VA_output.csv"
 PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS = "./midi-emotion/dev_src/generationPaths.txt"
+PATH_TO_SOUNDFONT = "./FluidR3_GM_GS.sf2"
+PATH_TO_WAV_OUTPUT_DIR = "./wav_output" 
 
 # clears output paths text file
 with open(PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS, "w") as f:
@@ -64,10 +66,14 @@ else:
 # identify midi output filepaths
 os.chdir(cwd)
 with open(PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS, "r") as f:
-    midiOutputPaths = f.readlines()
+    midiOutputPaths = f.read().splitlines()
     assert len(midiOutputPaths) > 0, "no midi output paths found" 
-
 midiOutputPaths = [path.replace("..", "midi-emotion") for path in midiOutputPaths]
 
 # convert each midi to wav using fluidsynth
-
+for midiOutputPath in midiOutputPaths:
+    assert midiOutputPath[-3] == ".mid", f"{midiOutputPath} is not a path to a midi file"
+    filename = midiOutputPath.split('/')[-1][:-4]
+    if not(os.path.isdir(PATH_TO_WAV_OUTPUT_DIR)):
+        os.makedirs(PATH_TO_WAV_OUTPUT_DIR)
+    os.system(f"fluidsynth -F {PATH_TO_WAV_OUTPUT_DIR}/{filename}.wav {PATH_TO_SOUNDFONT} {midiOutputPath}")
