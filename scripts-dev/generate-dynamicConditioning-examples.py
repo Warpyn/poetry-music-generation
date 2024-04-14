@@ -43,5 +43,5 @@ for i, midiOutputPath in enumerate(midiOutputPaths):
     assert midiOutputPath[-3:] == "mid", f"{midiOutputPath} is not a path to a midi file"
     if not(os.path.isdir(PATH_TO_WAV_OUTPUT_DIR)):
         os.makedirs(PATH_TO_WAV_OUTPUT_DIR)
-    outputFilename = midiOutputPath[:-4]
+    outputFilename = midiOutputPath.split('/')[-1][:-4]
     os.system(f"fluidsynth -F {PATH_TO_WAV_OUTPUT_DIR}/{outputFilename}.wav {PATH_TO_SOUNDFONT} ../{midiOutputPath}")
