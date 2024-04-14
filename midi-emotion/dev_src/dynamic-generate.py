@@ -250,6 +250,7 @@ def generate(model, conditions_tensor, maps, device, out_dir,
                     with open(out_path_txt, "w") as f:
                         f.write("\n".join(symbols))
                     torch.save(save_pt, out_path_inds)
+                return out_path_mid
             else:
                 print(f"Only has {n_instruments}, not saving.")
 
@@ -486,20 +487,24 @@ if __name__ == '__main__':
         for _ in range(args.num_runs):
             for i, primer in enumerate(chunks_):
                 # print(f"{len(chunks_) - i} runs remaining")
-                generate(model, conditions, maps, device, midi_output_dir, note=note,
+                out_path_mid = generate(model, conditions, maps, device, midi_output_dir, note=note,
                      repeat_penalty=not args.no_penalty, top_p=args.topp, varying_condition=varying_condition,
                     gen_len=args.gen_len, max_input_len=args.max_input_len, amp=not args.no_amp,
                     temperatures=args.temp, top_k=args.topk, debug=args.debug, verbose=not args.quiet, primers=primers)
+                with open("generationPaths.txt", "a") as f:
+                    f.write(f"{out_path_mid}\n")
     else:
         for i in range(args.num_runs):
             new_note = note # + "_run" + str(i)
             # print("here")
             # print(f"{ args.num_runs - i} runs remaining")
-            generate(model, conditions, maps, device, midi_output_dir, note=new_note,
+            out_path_mid = generate(model, conditions, maps, device, midi_output_dir, note=new_note,
                         repeat_penalty=not args.no_penalty, top_p=args.topp, varying_condition=varying_condition,
                         gen_len=args.gen_len, max_input_len=args.max_input_len, amp=not args.no_amp,
                         label_conditions=label_conditions,
                         temperatures=args.temp, top_k=args.topk, debug=args.debug, verbose=not args.quiet, primers=primers)
+            with open("generationPaths.txt", "a") as f:
+                f.write(f"{out_path_mid}\n")
 
     # # GRID SEARCH
     # song_name = "_"
