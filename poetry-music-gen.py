@@ -51,7 +51,7 @@ assert num_rows == (numPoems * numSentencesPerPoem if isDynamicGeneration else n
 
 # call emotion-music generation
 cwd = os.getcwd()
-newdir = cwd.copy().split('/')
+newdir = cwd.split('/')
 newdir.append('midi-emotion')
 newdir.append('dev_src')
 newdir = '/'.join(cwd)
