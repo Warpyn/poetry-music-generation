@@ -12,3 +12,4 @@ poetry_analysis/poem_to_VA_new/test.csv
 poetry_analysis/poem_to_VA_new/VA_output.csv
 poetry_analysis/poem_to_VA_new/VA_output.csv
 *.sf2
+midi-emotion/dev_src/generationPaths.txt
