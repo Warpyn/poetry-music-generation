@@ -54,7 +54,7 @@ cwd = os.getcwd()
 newdir = cwd.split('/')
 newdir.append('midi-emotion')
 newdir.append('dev_src')
-newdir = '/'.join(cwd)
+newdir = '/'.join(newdir)
 os.chdir(newdir)
 
 gen_len = 3072
