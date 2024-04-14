@@ -82,7 +82,7 @@ midiOutputPaths = [path.replace("..", "midi-emotion") for path in midiOutputPath
 
 # convert each midi to wav using fluidsynth
 for i, midiOutputPath in enumerate(midiOutputPaths):
-    assert midiOutputPath[-3] == ".mid", f"{midiOutputPath} is not a path to a midi file"
+    assert midiOutputPath[-3:] == ".mid", f"{midiOutputPath} is not a path to a midi file"
     if not(os.path.isdir(PATH_TO_WAV_OUTPUT_DIR)):
         os.makedirs(PATH_TO_WAV_OUTPUT_DIR)
     respectivePoemStr = poems[i].replace('\n','').replace(' ','')
