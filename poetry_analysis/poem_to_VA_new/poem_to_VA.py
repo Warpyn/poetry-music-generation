@@ -1,10 +1,10 @@
 from poem_VA_model import*
 from VAcalculator import*
+import os
 import sys
 import csv
 
-
-EMOTION_FILE_PATH = './content/emotionaVA_scaled_dic.csv'         
+EMOTION_FILE_PATH = os.path.dirname(__file__)+'/content/emotionaVA_scaled_dic.csv'         
 
 class poem_to_VA:
 
@@ -21,7 +21,7 @@ class poem_to_VA:
         self.kept_emotions = kept_emotions
         if not progressive:
             final_val = my_calc.wrapper(kept_emotions)
-            print(kept_emotions)
+            # print(kept_emotions)
         if progressive:
             final_val = []
             for sen in kept_emotions:
@@ -47,7 +47,7 @@ class poem_to_VA:
     def to_csv(self, VA_results, progressive = True):
         if not progressive:
             self.output_file_name = "Non_progressive_output.csv"
-        with open(self.output_file_name, 'w', newline='') as csvfile:
+        with open(os.path.dirname(__file__)+'/'+self.output_file_name, 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerow(["Poem", "Valence", "Arousal"])
             if not progressive:

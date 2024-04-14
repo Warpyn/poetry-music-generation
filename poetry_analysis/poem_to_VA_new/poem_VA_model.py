@@ -1,4 +1,5 @@
 from openai import OpenAI
+import os
 import json
 
 
@@ -11,7 +12,9 @@ class GPT_client:
     '''
 
     def __init__(self):
-        with open("apiKey.txt", "r") as f:
+        cur_path = os.path.dirname(__file__)
+        apiKeyPath = os.path.join(cur_path, "apiKey.txt")
+        with open(apiKeyPath, "r") as f:
             apiKey = f.read().rstrip()
         self.classifier = OpenAI(api_key=apiKey)
         #self.emotion_list = "admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, neutral"

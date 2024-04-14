@@ -42,7 +42,7 @@ isDynamicGeneration = args.gen_type == 'dynamic'
 poems = poetryInput.split('|')
 numPoems = len(poems)
 numSentencesPerPoem = [len(poem.split('.')) for poem in poems]
-os.system(f"python {PATH_TO_POETRY_EMOTION_SCRIPT} {poetryInput} {isDynamicGeneration}")
+os.system(f'python {PATH_TO_POETRY_EMOTION_SCRIPT} "{poetryInput}" {isDynamicGeneration}')
 
 # read poetry-emotion csv output
 vaDF = pd.read_csv(PATH_TO_POETRY_DYNAMIC_EMOTION_OUTPUT if isDynamicGeneration else PATH_TO_POETRY_STATIC_EMOTION_OUTPUT) 

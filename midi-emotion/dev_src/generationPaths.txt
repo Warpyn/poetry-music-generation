@@ -1,4 +1,0 @@
-../output/continuous_concat/generations/inference/2024_04_11_13_21_26_0_V00_A01.mid
-../output/continuous_concat/generations/inference/2024_04_11_13_22_06_0_V01_A00.mid
-../output/continuous_concat/generations/inference/2024_04_11_13_22_45_0_V00_A00.mid
-../output/continuous_concat/generations/inference/2024_04_11_13_23_26_0_V00_A00.mid
