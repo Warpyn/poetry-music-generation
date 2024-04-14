@@ -50,8 +50,8 @@ num_rows, _ = vaDF.shape
 assert num_rows == (numPoems * numSentencesPerPoem if isDynamicGeneration else numPoems), "unexpected output length for poetry analysis"
 
 # call emotion-music generation
-cwd = os.getcwd().split('/')
-newdir = cwd.copy()
+cwd = os.getcwd()
+newdir = cwd.copy().split('/')
 newdir.append('midi-emotion')
 newdir.append('dev_src')
 newdir = '/'.join(cwd)
