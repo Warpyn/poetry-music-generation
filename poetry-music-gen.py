@@ -15,7 +15,7 @@ import pandas as pd
 parser = argparse.ArgumentParser(description="Convert poetry as text to music as MIDI.")
 parser.add_argument('-f', '--filepath', action='store_true', help='whether or given input is a filepath to a text file')
 parser.add_argument('input', type=str, help='The input (a filepath to a text file or line of text)')
-parser.add_argument('--gen_type', choices=['static', 'dynamic'])
+parser.add_argument('--gen_type', choices=['static', 'dynamic'], required=True)
 args = parser.parse_args()
 
 PATH_TO_POETRY_EMOTION_SCRIPT = "./poetry_analysis/poem_to_VA_new/main.py"
