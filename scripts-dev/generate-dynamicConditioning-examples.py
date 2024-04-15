@@ -22,8 +22,10 @@ os.chdir(newdir)
 
 # generate command
 VAconditions = [(-0.8, -0.8), (0.8, 0.8), (-0.8, -0.8)]
-valences = [ i for i, j in VAconditions ]
-arousals = [ j for i, j in VAconditions ]
+valences = [ str(i) for i, j in VAconditions ]
+arousals = [ str(j) for i, j in VAconditions ]
+valencesStr = " ".join(valences)
+arousalsStr = " ".join(arousals)
 numSentences = len(valences)
 
 gen_len = 3072
@@ -31,12 +33,12 @@ max_input_len = 512
 batch_size = 1
 temps = [1.5, 0.7]
 # for each unit = 1 / 2*sentences-1
-keep_unchanged = str(1.0 / ((2.0*numSentences)-1.0))
+keep_unchanged = 1.0 / ((2.0*numSentences)-1.0)
 
 # currently using max condition to generate all change conditions
 # need to modify generate file to create custom conditions
 
-os.system(f"python dynamic-generate.py --model_dir continuous_concat --conditioning continuous_concat --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len} --smooth_change --keep_unchanged {keep_unchanged} --temp {temps[0]} {temps[1]} --valence_dynamic {' '.join(valences)} --arousal_dynamic {' '.join(arousals)}")
+os.system(f"python dynamic-generate.py --model_dir continuous_concat --conditioning continuous_concat --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len} --smooth_change --keep_unchanged {keep_unchanged} --temp {temps[0]} {temps[1]} --valence_dynamic {valencesStr} --arousal_dynamic {arousalsStr}")
 
 os.chdir(cwd)
 with open(PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS, "r") as f:
