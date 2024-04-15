@@ -31,7 +31,7 @@ max_input_len = 512
 batch_size = 1
 temps = [1.5, 0.7]
 # for each unit = 1 / 2*sentences-1
-keep_unchanged = 1.0 / ((2.0*numSentences)-1.0)
+keep_unchanged = str(1.0 / ((2.0*numSentences)-1.0))
 
 # currently using max condition to generate all change conditions
 # need to modify generate file to create custom conditions
