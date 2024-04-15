@@ -81,7 +81,7 @@ else:
         valence, arousal = float(vaDF["Valence"][rowIndex]), float(vaDF["Arousal"][rowIndex])
         arousal = -0.2 if arousal == 0 else arousal
         arousal = 0.2 * arousal/abs(arousal) if abs(arousal) < 0.2 else arousal
-    os.system(f"python generate.py --model_dir continuous_concat --conditioning continuous_concat --valence {valence} --arousal {arousal} --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len}")
+        os.system(f"python generate.py --model_dir continuous_concat --conditioning continuous_concat --valence {valence} --arousal {arousal} --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len}")
 
 # identify midi output filepaths
 os.chdir(cwd)
