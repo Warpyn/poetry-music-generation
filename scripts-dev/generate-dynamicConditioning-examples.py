@@ -24,13 +24,13 @@ os.chdir(newdir)
 gen_len = 3072
 max_input_len = 512
 batch_size = 1
-max_condition = 0.8
 temps = [1.5, 0.7]
+keep_unchanged = 0.3
 
 # currently using max condition to generate all change conditions
 # need to modify generate file to create custom conditions
 
-os.system(f"python dynamic-generate.py --model_dir continuous_concat --conditioning continuous_concat --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len} --smooth_change --max_condition {max_condition} --temp {temps[0]} {temps[1]}")
+os.system(f"python dynamic-generate.py --model_dir continuous_concat --conditioning continuous_concat --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len} --smooth_change --keep_unchanged {keep_unchanged} --temp {temps[0]} {temps[1]}")
 
 os.chdir(cwd)
 with open(PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS, "r") as f:
