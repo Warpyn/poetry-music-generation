@@ -503,7 +503,6 @@ if __name__ == '__main__':
                 note = "abrupt"
 
             varying_condition = [v_varying, a_varying]
-            print(varying_condition)
         else:
             conditions = torch.FloatTensor(conditions)
             # conditions = torch.FloatTensor([

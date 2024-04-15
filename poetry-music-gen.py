@@ -3,8 +3,6 @@ Full workflow of poetry text to generated MIDI.
 
 Different poems are separated by "|".
 Dynamic generation is split by sentence using a "." as a delimiter.
-
-TODO: Dynamic music generation 
 """
 
 import argparse
@@ -99,5 +97,5 @@ for i, midiOutputPath in enumerate(midiOutputPaths):
     if not(os.path.isdir(PATH_TO_WAV_OUTPUT_DIR)):
         os.makedirs(PATH_TO_WAV_OUTPUT_DIR)
     respectivePoemStr = poems[i].replace('\n','').replace(' ','')
-    outputFilename = respectivePoemStr[:10] if len(respectivePoemStr) > 10 else respectivePoemStr
+    outputFilename = respectivePoemStr[:20] if len(respectivePoemStr) > 20 else respectivePoemStr
     os.system(f"fluidsynth -F {PATH_TO_WAV_OUTPUT_DIR}/{outputFilename}.wav {PATH_TO_SOUNDFONT} {midiOutputPath}")
