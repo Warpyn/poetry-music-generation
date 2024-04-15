@@ -419,7 +419,8 @@ if __name__ == '__main__':
             #                             [ 0,    0 ,  -0.7,  0.7],
             #                             [ 0,    0 ,   0.7, -0.7],
             #                             ])
-            max_ = args.max_condition   # 0.8
+            max_ = args.max_condition
+            max_ = 0.8   # 0.8
             constant = args.constant_condition    # -0.7
 
             # keep_unchanged = 0    # ratio of tokens with no change
