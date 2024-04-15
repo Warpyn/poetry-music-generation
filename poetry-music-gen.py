@@ -96,6 +96,6 @@ for i, midiOutputPath in enumerate(midiOutputPaths):
     assert midiOutputPath[-3:] == "mid", f"{midiOutputPath} is not a path to a midi file"
     if not(os.path.isdir(PATH_TO_WAV_OUTPUT_DIR)):
         os.makedirs(PATH_TO_WAV_OUTPUT_DIR)
-    respectivePoemStr = poems[i].replace('\n','').replace(' ','')
+    respectivePoemStr = poems[i].rstrip().lstrip().replace('\n','').replace(' ','').replace('!','').replace("'","").replace('"','')
     outputFilename = respectivePoemStr[:20] if len(respectivePoemStr) > 20 else respectivePoemStr
     os.system(f"fluidsynth -F {PATH_TO_WAV_OUTPUT_DIR}/{outputFilename}.wav {PATH_TO_SOUNDFONT} {midiOutputPath}")
