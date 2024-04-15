@@ -297,6 +297,8 @@ if __name__ == '__main__':
     parser.add_argument('--constant_condition', type=float, default=[0])#, nargs='+')
     parser.add_argument("--batch_gen_dir", type=str, default="")
     parser.add_argument("--keep_unchanged", type=float, default=0)
+    parser.add_argument('--valence_dynamic', type=float, help='Conditioning valence value', default=[0], nargs='+')
+    parser.add_argument('--arousal_dynamic', type=float, help='Conditioning arousal value', default=[0], nargs='+')
 
     args = parser.parse_args()
 
@@ -305,6 +307,7 @@ if __name__ == '__main__':
     assert not (args.abrupt_change and args.smooth_change)
 
     assert len(args.valence) == len(args.arousal)
+    assert len(args.valence_dynamic) == len(args.arousal_dynamic)
 
     if args.seed:
         torch.manual_seed(666)
@@ -434,6 +437,8 @@ if __name__ == '__main__':
             v_end =   [-max_,    max_,      -max_, max_]
             a_start = [ max_, -max_, -max_,     max_]
             a_end = [   -max_, max_,  max_,    -max_]
+            valence_dynamic_vals = args.valence_dynamic
+            arousal_dynamic_vals = args.arousal_dynamic
 
             if args.smooth_change:
                 if args.keep_unchanged <= 0:
@@ -445,20 +450,46 @@ if __name__ == '__main__':
                     
                 else:
                     # constant finish and end, smooth interpolation in middle
+                    valenceListOfTensors = []
+                    arousalListOfTensors = []
+                    numSentences = len(valence_dynamic_vals)
+                    for sentence_i in range(numSentences):
+                        valence_i = valence_dynamic_vals[sentence_i]
+                        arousal_i = arousal_dynamic_vals[sentence_i]
+
+                        valenceListOfTensors.append( torch.ones(round(args.gen_len*args.keep_unchanged)) * valence_i )
+                        arousalListOfTensors.append( torch.ones(round(args.gen_len*args.keep_unchanged)) * arousal_i )
+
+                        if sentence_i < (numSentences - 1):
+                            valenceListOfTensors.append( torch.linspace(valence_i, valence_dynamic_vals[sentence_i + 1], round(args.gen_len * (1-numSentences*args.keep_unchanged))) )
+                            arousalListOfTensors.append( torch.linspace(arousal_i, arousal_dynamic_vals[sentence_i + 1], round(args.gen_len * (1-numSentences*args.keep_unchanged))) )
+
+                    
                     v_varying = torch.stack([
                             torch.cat((
-                                        torch.ones(round(args.gen_len*args.keep_unchanged)) * v_start[j],
-                                        torch.linspace(v_start[j], v_end[j], round(args.gen_len * (1-2*args.keep_unchanged))),
-                                        torch.ones(round(args.gen_len*args.keep_unchanged)) * v_end[j],
+                                        tuple(valenceListOfTensors)
                                         )) \
-                                for j in range(len(a_start))], dim=0)
+                                ], dim=0)
                     a_varying = torch.stack([
                             torch.cat((
-                                        torch.ones(round(args.gen_len*args.keep_unchanged)) * a_start[j],
-                                        torch.linspace(a_start[j], a_end[j], round(args.gen_len * (1-2*args.keep_unchanged))),
-                                        torch.ones(round(args.gen_len*args.keep_unchanged)) * a_end[j],
+                                        tuple(arousalListOfTensors)
                                         )) \
-                                for j in range(len(a_start))], dim=0)
+                                ], dim=0)
+                    
+                    # v_varying = torch.stack([
+                    #         torch.cat((
+                    #                     torch.ones(round(args.gen_len*args.keep_unchanged)) * v_start[j],
+                    #                     torch.linspace(v_start[j], v_end[j], round(args.gen_len * (1-2*args.keep_unchanged))),
+                    #                     torch.ones(round(args.gen_len*args.keep_unchanged)) * v_end[j],
+                    #                     )) \
+                    #             for j in range(len(a_start))], dim=0)
+                    # a_varying = torch.stack([
+                    #         torch.cat((
+                    #                     torch.ones(round(args.gen_len*args.keep_unchanged)) * a_start[j],
+                    #                     torch.linspace(a_start[j], a_end[j], round(args.gen_len * (1-2*args.keep_unchanged))),
+                    #                     torch.ones(round(args.gen_len*args.keep_unchanged)) * a_end[j],
+                    #                     )) \
+                    #             for j in range(len(a_start))], dim=0)
                 note = "smooth"
             
             elif args.abrupt_change:
