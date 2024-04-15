@@ -29,7 +29,7 @@ with open(PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS, "w") as f:
 
 # read input poetry
 if args.filepath:
-    assert args.input[:-3] == "txt", f"Input file {args.input} is not a txt file"
+    assert args.input[-3:] == "txt", f"Input file {args.input} is not a txt file"
     with open(args.filepath, 'r') as f:
         poetryInput = f.read()
 else:
