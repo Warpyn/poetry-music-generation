@@ -44,7 +44,7 @@ def generate(model, conditions_tensor, maps, device, out_dir,
     else:
         batch_size = len(primers)
 
-    
+    midiOutPaths = []
     
     # will be used to penalize repeats
     repeat_counts = [0 for _ in range(batch_size)]
@@ -177,7 +177,7 @@ def generate(model, conditions_tensor, maps, device, out_dir,
         # =================================================================
         # CONVERT TO MIDI AND SAVE
         # =================================================================
-        midiOutPaths = []
+        
         for i in range(gen_song_tensor.size(-1)):
             if step is None:
                 now = datetime.datetime.now()
@@ -253,6 +253,7 @@ def generate(model, conditions_tensor, maps, device, out_dir,
                 midiOutPaths.append(out_path_mid)
             else:
                 print(f"Only has {n_instruments}, not saving.")
+
 
 
 
