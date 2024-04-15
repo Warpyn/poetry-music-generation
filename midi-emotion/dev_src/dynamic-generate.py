@@ -6,6 +6,7 @@ from tqdm import tqdm
 import torch
 import torch.nn.functional as F
 import datetime
+import math
 from utils import get_n_instruments
 from models.build_model import build_model
 from data.data_processing_reverse import ind_tensor_to_mid, ind_tensor_to_str, ind_tensor_to_tuples
@@ -457,12 +458,12 @@ if __name__ == '__main__':
                         valence_i = valence_dynamic_vals[sentence_i]
                         arousal_i = arousal_dynamic_vals[sentence_i]
 
-                        valenceListOfTensors.append( torch.ones(round(args.gen_len*args.keep_unchanged)) * valence_i )
-                        arousalListOfTensors.append( torch.ones(round(args.gen_len*args.keep_unchanged)) * arousal_i )
+                        valenceListOfTensors.append( torch.ones(round(math.ceil(args.gen_len*args.keep_unchanged))) * valence_i )
+                        arousalListOfTensors.append( torch.ones(round(math.ceil(args.gen_len*args.keep_unchanged))) * arousal_i )
 
                         if sentence_i < (numSentences - 1):
-                            valenceListOfTensors.append( torch.linspace(valence_i, valence_dynamic_vals[sentence_i + 1], round(args.gen_len * (1-numSentences*args.keep_unchanged))) )
-                            arousalListOfTensors.append( torch.linspace(arousal_i, arousal_dynamic_vals[sentence_i + 1], round(args.gen_len * (1-numSentences*args.keep_unchanged))) )
+                            valenceListOfTensors.append( torch.linspace(valence_i, valence_dynamic_vals[sentence_i + 1], round(math.ceil(args.gen_len * (1-numSentences*args.keep_unchanged)))) )
+                            arousalListOfTensors.append( torch.linspace(arousal_i, arousal_dynamic_vals[sentence_i + 1], round(math.ceil(args.gen_len * (1-numSentences*args.keep_unchanged)))) )
 
                     
                     v_varying = torch.stack([
