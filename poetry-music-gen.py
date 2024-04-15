@@ -9,7 +9,7 @@ TODO: Dynamic music generation
 
 import argparse
 import os
-import numpy as np
+import json
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="Convert poetry as text to music as MIDI.")
@@ -47,7 +47,7 @@ os.system(f'python {PATH_TO_POETRY_EMOTION_SCRIPT} "{poetryInput}" {isDynamicGen
 # read poetry-emotion csv output
 vaDF = pd.read_csv(PATH_TO_POETRY_DYNAMIC_EMOTION_OUTPUT if isDynamicGeneration else PATH_TO_POETRY_STATIC_EMOTION_OUTPUT) 
 num_rows, _ = vaDF.shape
-assert num_rows == (numPoems * numSentencesPerPoem if isDynamicGeneration else numPoems), "unexpected output length for poetry analysis"
+assert num_rows == numPoems, "unexpected output length for poetry analysis"
 
 # call emotion-music generation
 cwd = os.getcwd()
@@ -65,16 +65,14 @@ temps = [1.5, 0.7]
 if isDynamicGeneration:
     
     # dynamic emotion generation
-    row_idx = 0
-    for poem_i in range(numPoems):
+    for rowIndex in range(num_rows):
         
-        sentencesInThisPoem = numSentencesPerPoem[poem_i]
+        sentencesInThisPoem = numSentencesPerPoem[rowIndex]
         keep_unchanged = 1.0 / ((2.0*sentencesInThisPoem)-1.0)
-        valences = [ str(float(vaDF["Valence"][row_idx + a])) for a in range(sentencesInThisPoem)]
-        arousals = [ str(float(vaDF["Arousal"][row_idx + a])) for a in range(sentencesInThisPoem)]
-        valencesStr = " ".join(valences)
-        arousalsStr = " ".join(arousals)
-        row_idx += sentencesInThisPoem
+        valences = json.loads(vaDF["Valence"][rowIndex])
+        arousals = json.loads(vaDF["Arousal"][rowIndex])
+        valencesStr = " ".join([str(v) for v in valences])
+        arousalsStr = " ".join([str(a) for a in arousals])
 
         os.system(f"python dynamic-generate.py --model_dir continuous_concat --conditioning continuous_concat --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len} --smooth_change --keep_unchanged {keep_unchanged} --temp {temps[0]} {temps[1]} --valence_dynamic {valencesStr} --arousal_dynamic {arousalsStr}")
 
