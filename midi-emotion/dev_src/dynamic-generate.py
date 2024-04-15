@@ -253,7 +253,8 @@ def generate(model, conditions_tensor, maps, device, out_dir,
                 midiOutPaths.append(out_path_mid)
             else:
                 print(f"Only has {n_instruments}, not saving.")
-
+    
+    return midiOutPaths
 
 
 
