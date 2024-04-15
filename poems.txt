@@ -71,22 +71,22 @@ In our dry cellar
 |
 
 O Captain! my Captain! our fearful trip is done,
-The ship has weather'd every rack, the prize we sought is won,
+The ship has weather'd every rack, the prize we sought is won,.
 The port is near, the bells I hear, the people all exulting,
-While follow eyes the steady keel, the vessel grim and daring;
+While follow eyes the steady keel, the vessel grim and daring;.
 
 |
 
 I wandered lonely as a cloud
-That floats on high o'er vales and hills,
+That floats on high o'er vales and hills,.
 When all at once I saw a crowd,
-A host, of golden daffodils;
+A host, of golden daffodils;.
 Beside the lake, beneath the trees,
 
 |
 
 Once upon a midnight dreary, while I pondered, weak and weary,
-Over many a quaint and curious volume of forgotten lore—
+Over many a quaint and curious volume of forgotten lore.
 While I nodded, nearly napping, suddenly there came a tapping,
 As of some one gently rapping, rapping at my chamber door.
 
