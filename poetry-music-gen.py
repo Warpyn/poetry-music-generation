@@ -60,14 +60,27 @@ os.chdir(newdir)
 gen_len = 3072
 max_input_len = 512
 batch_size = 1
+temps = [1.5, 0.7]
 
 if isDynamicGeneration:
-    raise Exception("dynamic conditioning is not yet implemented.")
-    # for rowIndex in range(num_rows):
-    #     valence, arousal = float(vaDF["Valence"][rowIndex]), float(vaDF["Arousal"][rowIndex])
-    #     # generate command -- will need to modify dynamic generate file to accept and test custom inputs of any size
+    
+    # dynamic emotion generation
+    row_idx = 0
+    for poem_i in range(numPoems):
+        
+        sentencesInThisPoem = numSentencesPerPoem[poem_i]
+        keep_unchanged = 1.0 / ((2.0*sentencesInThisPoem)-1.0)
+        valences = [ str(float(vaDF["Valence"][row_idx + a])) for a in range(sentencesInThisPoem)]
+        arousals = [ str(float(vaDF["Arousal"][row_idx + a])) for a in range(sentencesInThisPoem)]
+        valencesStr = " ".join(valences)
+        arousalsStr = " ".join(arousals)
+        row_idx += sentencesInThisPoem
+
+        os.system(f"python dynamic-generate.py --model_dir continuous_concat --conditioning continuous_concat --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len} --smooth_change --keep_unchanged {keep_unchanged} --temp {temps[0]} {temps[1]} --valence_dynamic {valencesStr} --arousal_dynamic {arousalsStr}")
+
 else:
-    # static conditioning
+    
+    # static emotion generation
     for rowIndex in range(num_rows):
         valence, arousal = float(vaDF["Valence"][rowIndex]), float(vaDF["Arousal"][rowIndex])
         arousal = -0.2 if arousal == 0 else arousal
