@@ -147,7 +147,7 @@ class GPT_client:
                 """
 
         response = self.get_completion(prompt)
-        #print(response.content)
+        response.content = response.content.replace("```json", "")
         kept_emotions = json.loads(response.content)
         return kept_emotions
 
