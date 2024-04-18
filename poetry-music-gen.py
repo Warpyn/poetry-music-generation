@@ -2,7 +2,7 @@
 Full workflow of poetry text to generated MIDI.
 
 Different poems are separated by "|".
-Dynamic generation is split by sentence using a "." as a delimiter.
+Dynamic generation is split by either by sentence using a "." as a delimiter, or using a sliding window.
 """
 
 import argparse
@@ -13,7 +13,7 @@ import pandas as pd
 parser = argparse.ArgumentParser(description="Convert poetry as text to music as MIDI.")
 parser.add_argument('-f', '--filepath', action='store_true', help='whether or given input is a filepath to a text file')
 parser.add_argument('input', type=str, help='The input (a filepath to a text file or line of text)')
-parser.add_argument('--gen_type', choices=['static', 'dynamic'], required=True)
+parser.add_argument('--gen_type', choices=['static', 'sentences', 'windowed'], required=True)
 args = parser.parse_args()
 
 PATH_TO_POETRY_EMOTION_SCRIPT = "./poetry_analysis/poem_to_VA_new/main.py"
@@ -36,14 +36,14 @@ else:
     poetryInput = args.input
 
 # call poetry-emotion conversion
-isDynamicGeneration = args.gen_type == 'dynamic'
+generationTypeCodeDict = {"static": 0, "sentences": 1, "windowed": 2}
+generationTypeCode = generationTypeCodeDict[args.gen_type]
 poems = poetryInput.split('|')
 numPoems = len(poems)
-numSentencesPerPoem = [len(poem.split('.')) for poem in poems]
-os.system(f'python {PATH_TO_POETRY_EMOTION_SCRIPT} "{poetryInput}" {isDynamicGeneration}')
+os.system(f'python {PATH_TO_POETRY_EMOTION_SCRIPT} "{poetryInput}" {generationTypeCode}')
 
 # read poetry-emotion csv output
-vaDF = pd.read_csv(PATH_TO_POETRY_DYNAMIC_EMOTION_OUTPUT if isDynamicGeneration else PATH_TO_POETRY_STATIC_EMOTION_OUTPUT) 
+vaDF = pd.read_csv(PATH_TO_POETRY_DYNAMIC_EMOTION_OUTPUT if generationTypeCode != 0 else PATH_TO_POETRY_STATIC_EMOTION_OUTPUT) 
 num_rows, _ = vaDF.shape
 assert num_rows == numPoems, "unexpected output length for poetry analysis"
 
@@ -60,15 +60,17 @@ max_input_len = 512
 batch_size = 1
 temps = [1.5, 0.7]
 
-if isDynamicGeneration:
+if generationTypeCode != 0:
     
     # dynamic emotion generation
     for rowIndex in range(num_rows):
         
-        sentencesInThisPoem = numSentencesPerPoem[rowIndex]
-        keep_unchanged = 1.0 / ((2.0*sentencesInThisPoem)-1.0)
         valences = json.loads(vaDF["Valence"][rowIndex])
         arousals = json.loads(vaDF["Arousal"][rowIndex])
+
+        numEmotionStates = len(valences)
+        keep_unchanged = 1.0 / ((2.0*numEmotionStates)-1.0)
+
         valencesStr = " ".join([str(v) for v in valences])
         arousalsStr = " ".join([str(a) for a in arousals])
 
