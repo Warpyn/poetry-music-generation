@@ -35,10 +35,29 @@ class GPT_client:
     '''
 
     def extract_sentences(self, poem):
-        poem = poem.replace('\n', '')
+        poem = poem.replace('\n', ' ')
         sentences = poem.split('.')
         sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
         return sentences
+
+    def sliding_window(self, poem):
+        poem = poem.replace("\n", " ")
+        words = poem.split()
+
+        window_size = len(words)//5 if len(words) > 40 else len(words)//3
+        step = window_size // 2
+
+        segments = []
+        current = 0
+
+        while current + window_size < len(words):
+            segments.append(' '.join(words[current:current + window_size]))
+            current += step
+
+        if current < len(words):
+            segments.append(' '.join(words[current:]))
+        
+        return segments
 
 
 
@@ -57,11 +76,11 @@ class GPT_client:
         )
         return response.choices[0].message
 
-    def detect_emotion(self, poem, progressive = True, prompt = None):
+    def detect_emotion(self, poem, progressive = 2, prompt = None):
         example_non_progressive = '[{"key":value}, {"key":value}]'
         example_progressive = '[{sentence_id:vale}, {sentence:sentence}, {sentence_emotion:{key:value}, {key:value}}]'
         if not prompt: 
-            if not progressive:
+            if progressive == 0:
                 prompt = f"""For the poem delimited by triple backticks,\
                 give me a list of six to eight emotions that the poem is\
                 expressing, with each emotion labeled with its percentage.\
@@ -78,12 +97,14 @@ class GPT_client:
                 anything like "\n" or "```" or "json". The final list whould be a \
                 whole json list like {example_non_progressive} instead of several seperated json list\
                 """ 
-            if progressive:
+            if progressive == 1:
                 sentenceArray = self.extract_sentences(poem)
                 prompt = f"""Based on the poem delimited by triple backticks,\
                 for each sentence in the sentence array delimited in single backticks,\
                 give me a list of three to five emotions that that sentence is\
                 expressing, with each emotion labeled with its percentage.\
+                When considering what emotions are expressed, please\
+                consider it in the context of the whole poem.\
                 the output should be a list containing several lists\
                 All emotion must be selected from the list delimited by\
                 square bracket. \
@@ -100,6 +121,31 @@ class GPT_client:
                 anything like "\n" or "```" or "json". The final list whould be a \
                 whole json list like {example_progressive}\
                 """
+            if progressive == 2:
+                segmentArray = self.sliding_window(poem)
+                prompt = f"""Based on the poem delimited by triple backticks,\
+                for each segment in the sentence array delimited in single backticks,\
+                give me a list of three to five emotions that that segment is\
+                expressing, with each emotion labeled with its percentage.\
+                When considering what emotions are expressed, please\
+                consider it in the context of the whole poem.\
+                the output should be a list containing several lists\
+                All emotion must be selected from the list delimited by\
+                square bracket. \
+                Provode the result with JSON format with the following keys and with out anyother characters.\
+                For the large list, the keys are:\
+                "sentence_id", "sentence", "sentence_emotion"\
+                For the sublists, the keys are:\
+                "emotion_id", "emotion", "percentage"\
+                ```{poem}```
+                `{segmentArray}`
+                [{self.emotion_list}]
+                The output should be like a json file and should not contain any\
+                charater to organize how the answer is displayed. Do not include\
+                anything like "\n" or "```" or "json". The final list whould be a \
+                whole json list like {example_progressive}\
+                """
+
         response = self.get_completion(prompt)
         #print(response.content)
         kept_emotions = json.loads(response.content)
