@@ -36,6 +36,8 @@ if args.filepath:
 else:
     poetryInput = args.input
 
+print("Read poetry input.")
+
 # call poetry-emotion conversion
 generationTypeCodeDict = {
     "static": (0, PATH_TO_POETRY_STATIC_EMOTION_OUTPUT), 
@@ -45,12 +47,19 @@ generationTypeCodeDict = {
 generationTypeCode, pathToExtractedEmotion = generationTypeCodeDict[args.gen_type]
 poems = poetryInput.split('|')
 numPoems = len(poems)
+
+print(f"Analyzing poetry for emotion: {args.gen_type}")
+
 os.system(f'python {PATH_TO_POETRY_EMOTION_SCRIPT} "{poetryInput}" {generationTypeCode}')
+
+print("Completed poetry-emotion analysis.")
 
 # read poetry-emotion csv output
 vaDF = pd.read_csv(pathToExtractedEmotion) 
 num_rows, _ = vaDF.shape
 assert num_rows == numPoems, "unexpected output length for poetry analysis"
+
+print("Read poetry-emotion output.")
 
 # call emotion-music generation
 cwd = os.getcwd()
@@ -64,6 +73,8 @@ gen_len = 3072
 max_input_len = 512
 batch_size = 1
 temps = [1.5, 0.7]
+
+print("Generating MIDI.")
 
 if generationTypeCode != 0:
     
@@ -90,6 +101,10 @@ else:
         arousal = 0.2 * arousal/abs(arousal) if abs(arousal) < 0.2 else arousal
         os.system(f"python generate.py --model_dir continuous_concat --conditioning continuous_concat --valence {valence} --arousal {arousal} --batch_size {batch_size} --gen_len {gen_len} --max_input_len {max_input_len}")
 
+print("Completed MIDI generation.")
+
+print("Identifying MIDI output filepaths.")
+
 # identify midi output filepaths
 os.chdir(cwd)
 with open(PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS, "r") as f:
@@ -97,6 +112,10 @@ with open(PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS, "r") as f:
     assert len(midiOutputPaths) > 0, "no midi output paths found"
     assert len(midiOutputPaths) == numPoems, f"{len(midiOutputPaths)} midi files generated for {numPoems} poems" 
 midiOutputPaths = [path.replace("..", "midi-emotion") for path in midiOutputPaths]
+
+print("Found MIDI output filepaths.")
+
+print("Converting MIDI to wav.")
 
 # convert each midi to wav using fluidsynth
 for i, midiOutputPath in enumerate(midiOutputPaths):
@@ -106,3 +125,5 @@ for i, midiOutputPath in enumerate(midiOutputPaths):
     respectivePoemStr = poems[i].rstrip().lstrip().replace('\n','').replace(' ','').replace('!','').replace("'","").replace('"','')
     outputFilename = respectivePoemStr[:20] if len(respectivePoemStr) > 20 else respectivePoemStr
     os.system(f"fluidsynth -F {PATH_TO_WAV_OUTPUT_DIR}/{outputFilename}.wav {PATH_TO_SOUNDFONT} {midiOutputPath}")
+
+print("Completed.")
