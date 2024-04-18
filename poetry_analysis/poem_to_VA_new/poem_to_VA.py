@@ -46,7 +46,7 @@ class poem_to_VA:
             self.output_file_name = "Non_progressive_output.csv"
         elif progressive == 1:
             self.output_file_name = "Non_sliding_window_progressive_output.csv"
-        with open(self.output_file_name, 'w', newline='') as csvfile:
+        with open(os.path.dirname(__file__)+'/'+self.output_file_name, 'w', newline='') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerow(["Poem", "Valence", "Arousal"])
             if progressive == 0:
