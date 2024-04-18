@@ -18,7 +18,8 @@ args = parser.parse_args()
 
 PATH_TO_POETRY_EMOTION_SCRIPT = "./poetry_analysis/poem_to_VA_new/main.py"
 PATH_TO_POETRY_STATIC_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/Non_progressive_output.csv"
-PATH_TO_POETRY_DYNAMIC_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/VA_output.csv"
+PATH_TO_POETRY_DYNAMIC_SENTENCES_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/VA_output.csv"
+PATH_TO_POETRY_DYNAMIC_WINDOWED_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/Non_sliding_window_progressive_output.csv"
 PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS = "./midi-emotion/dev_src/generationPaths.txt"
 PATH_TO_SOUNDFONT = "./FluidR3_GM_GS.sf2"
 PATH_TO_WAV_OUTPUT_DIR = "./wav_output" 
@@ -36,14 +37,18 @@ else:
     poetryInput = args.input
 
 # call poetry-emotion conversion
-generationTypeCodeDict = {"static": 0, "sentences": 1, "windowed": 2}
-generationTypeCode = generationTypeCodeDict[args.gen_type]
+generationTypeCodeDict = {
+    "static": (0, PATH_TO_POETRY_STATIC_EMOTION_OUTPUT), 
+    "sentences": (1, PATH_TO_POETRY_DYNAMIC_SENTENCES_EMOTION_OUTPUT), 
+    "windowed": (2, PATH_TO_POETRY_DYNAMIC_WINDOWED_EMOTION_OUTPUT)
+}
+generationTypeCode, pathToExtractedEmotion = generationTypeCodeDict[args.gen_type]
 poems = poetryInput.split('|')
 numPoems = len(poems)
 os.system(f'python {PATH_TO_POETRY_EMOTION_SCRIPT} "{poetryInput}" {generationTypeCode}')
 
 # read poetry-emotion csv output
-vaDF = pd.read_csv(PATH_TO_POETRY_DYNAMIC_EMOTION_OUTPUT if generationTypeCode != 0 else PATH_TO_POETRY_STATIC_EMOTION_OUTPUT) 
+vaDF = pd.read_csv(pathToExtractedEmotion) 
 num_rows, _ = vaDF.shape
 assert num_rows == numPoems, "unexpected output length for poetry analysis"
 
