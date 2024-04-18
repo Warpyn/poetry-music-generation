@@ -18,8 +18,8 @@ args = parser.parse_args()
 
 PATH_TO_POETRY_EMOTION_SCRIPT = "./poetry_analysis/poem_to_VA_new/main.py"
 PATH_TO_POETRY_STATIC_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/Non_progressive_output.csv"
-PATH_TO_POETRY_DYNAMIC_SENTENCES_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/VA_output.csv"
-PATH_TO_POETRY_DYNAMIC_WINDOWED_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/Non_sliding_window_progressive_output.csv"
+PATH_TO_POETRY_DYNAMIC_SENTENCES_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/Non_sliding_window_progressive_output.csv"
+PATH_TO_POETRY_DYNAMIC_WINDOWED_EMOTION_OUTPUT = "./poetry_analysis/poem_to_VA_new/VA_output.csv"
 PATH_TO_MUSIC_GENERATIONS_OUTPUT_PATHS = "./midi-emotion/dev_src/generationPaths.txt"
 PATH_TO_SOUNDFONT = "./FluidR3_GM_GS.sf2"
 PATH_TO_WAV_OUTPUT_DIR = "./wav_output" 
